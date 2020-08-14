@@ -8,14 +8,13 @@ import math
 import struct
 import gettext
 import datetime, time
-import urllib2, urllib
+import urllib
 from Screens.Console import Console
 from Components.Language import language
 from Plugins.Plugin import PluginDescriptor
 from Screens.Screen import Screen
 from Components.MenuList import MenuList
 from Screens.VirtualKeyBoard import VirtualKeyBoard
-from urllib import urlretrieve
 from Components.Label import Label
 from Components.ScrollLabel import ScrollLabel
 from Components.ActionMap import ActionMap, HelpableActionMap
@@ -174,11 +173,11 @@ def is_png(data):
 
 def checkInternet():
     try:
-        response = urllib2.urlopen("http://google.com", None, 5)
+        response = urllib.request.urlopen("http://google.com", None, 5)
         response.close()
-    except urllib2.HTTPError:
+    except urllib.error.HTTPError:
         return False
-    except urllib2.URLError:
+    except urllib.error.URLError:
         return False
     except socket.timeout:
         return False
@@ -209,14 +208,14 @@ def getLocWeer(iscity = None):
         print(mydata)
         citynumb = int(mydata.split("-")[1])
         print(citynumb)
-        response = urllib.urlopen("http://api.buienradar.nl/data/forecast/1.1/all/"+ str(citynumb))
+        response = urllib.request.urlopen("http://api.buienradar.nl/data/forecast/1.1/all/"+ str(citynumb))
         antw = response.read()
         weatherData = json.loads(antw)
         return True
     except:
         try:
             text = mydata.replace(' ', '%20')
-            req = urllib2.Request("http://claudck193.193.axc.nl/hetweer.php?cn="+text)
+            req = urllib.request.Request("http://claudck193.193.axc.nl/hetweer.php?cn="+text)
             response = urllib2.urlopen(req)
             antw = response.read()
             regx = '''(.*?),(.*?),'''
@@ -226,7 +225,7 @@ def getLocWeer(iscity = None):
 
     if match:
         try:
-            response = urllib.urlopen("http://api.buienradar.nl/data/forecast/1.1/all/"+match[0][0])
+            response = urllib.request.urlopen("http://api.buienradar.nl/data/forecast/1.1/all/"+match[0][0])
             antw = response.read()
             weatherData = json.loads(antw)
             return True
@@ -236,8 +235,8 @@ def getLocWeer(iscity = None):
         return False
 
 def weatherchat(country):
-    req = urllib2.Request("http://www.buienradar."+country+"/weerbericht")
-    response = urllib2.urlopen(req)
+    req = urllib.request.Request("http://www.buienradar."+country+"/weerbericht")
+    response = urllib.request.urlopen(req)
     antw = response.read()
     antw = antw.replace("\t", "").replace("\r", "").replace("\n", "").replace("<strong>", "")
     antw = antw.replace("<br />", "").replace("</strong>", "").replace("</a>", "")
@@ -324,7 +323,7 @@ class startScreen(Screen):
         self.close()
 
     def checkupg(self):
-        response = urllib2.urlopen("http://users.telenet.be/caught/version_hetweer.txt")
+        response = urllib.request.urlopen("http://users.telenet.be/caught/version_hetweer.txt")
         curver = float(response.read())
 
         if WeerInfoCurVer < curver:
@@ -799,25 +798,25 @@ class weatherMenuSub(Screen):
                     wchat = weatherchat("be/Belgie/weerbericht")
                     self.session.open(weathertalk)
                 elif type == _("Rainfall radar"):
-                    urllib.urlretrieve('http://api.buienradar.nl/image/1.0/radarmapbe/?ext=png&l=2&hist=0&forc=90&step=0&h=512&w=550', '/tmp/HetWeer/00.png')
+                    urllib.request.urlretrieve('http://api.buienradar.nl/image/1.0/radarmapbe/?ext=png&l=2&hist=0&forc=90&step=0&h=512&w=550', '/tmp/HetWeer/00.png')
                 elif type == _("Drizzle"):
-                    urllib.urlretrieve('http://api.buienradar.nl/image/1.0/drizzlemapnl/?ext=png&l=2&hist=50&forc=0&step=0&h=512&w=550', '/tmp/HetWeer/00.png')
+                    urllib.request.urlretrieve('http://api.buienradar.nl/image/1.0/drizzlemapnl/?ext=png&l=2&hist=50&forc=0&step=0&h=512&w=550', '/tmp/HetWeer/00.png')
                 elif type == _("Clouds radar"):
                     urllib.urlretrieve('http://api.buienradar.nl/image/1.0/cloudmapnl/?ext=png&l=2&hist=50&forc=0&step=0&h=512&w=550', '/tmp/HetWeer/00.png')
                 elif type == _("Sun radar"):
-                    urllib.urlretrieve('http://api.buienradar.nl/image/1.0/sunmapnl/?ext=png&l=2&hist=0&forc=50&step=0&h=512&w=550', '/tmp/HetWeer/00.png')
+                    urllib.request.urlretrieve('http://api.buienradar.nl/image/1.0/sunmapnl/?ext=png&l=2&hist=0&forc=50&step=0&h=512&w=550', '/tmp/HetWeer/00.png')
                     legend = False
                 elif type == _("Thunder radar"):
-                    urllib.urlretrieve('http://api.buienradar.nl/image/1.0/lightningnl/?ext=png&l=2&hist=50&forc=0&step=0&h=512&w=550', '/tmp/HetWeer/00.png')
+                    urllib.request.urlretrieve('http://api.buienradar.nl/image/1.0/lightningnl/?ext=png&l=2&hist=50&forc=0&step=0&h=512&w=550', '/tmp/HetWeer/00.png')
                 elif type == _("Hail radar"):
-                    urllib.urlretrieve('http://api.buienradar.nl/image/1.0/hailnl/?ext=png&l=2&hist=10&forc=1&step=0&w=550&h=512', '/tmp/HetWeer/00.png')
+                    urllib.request.urlretrieve('http://api.buienradar.nl/image/1.0/hailnl/?ext=png&l=2&hist=10&forc=1&step=0&w=550&h=512', '/tmp/HetWeer/00.png')
                 elif type == _("Snow radar"):
-                    urllib.urlretrieve('http://api.buienradar.nl/image/1.0/snowmapnl/?ext=png&l=2&hist=100&forc=1&step=0&w=550&h=512', '/tmp/HetWeer/00.png')
+                    urllib.request.urlretrieve('http://api.buienradar.nl/image/1.0/snowmapnl/?ext=png&l=2&hist=100&forc=1&step=0&w=550&h=512', '/tmp/HetWeer/00.png')
                 elif type == _("Satellite"):
-                    urllib.urlretrieve('http://api.buienradar.nl/image/1.0/satvisual2/?ext=png&l=2&hist=50&forc=0&step=0&w=550&h=512', '/tmp/HetWeer/00.png')
+                    urllib.request.urlretrieve('http://api.buienradar.nl/image/1.0/satvisual2/?ext=png&l=2&hist=50&forc=0&step=0&w=550&h=512', '/tmp/HetWeer/00.png')
                     legend = False
                 elif type == _("Sunpower-UV"):
-                    urllib.urlretrieve('https://image.buienradar.nl/2.0/image/sprite/WeatherMapUVIndexNL?extension=png&l=2&hist=0&forc=10&step=0&width=550&height=512', '/tmp/HetWeer/00.png')
+                    urllib.request.urlretrieve('https://image.buienradar.nl/2.0/image/sprite/WeatherMapUVIndexNL?extension=png&l=2&hist=0&forc=10&step=0&width=550&height=512', '/tmp/HetWeer/00.png')
                     legend = False
                 if not type == _("Weather forecast-nl"):
                     openScreenRadar()
@@ -827,28 +826,28 @@ class weatherMenuSub(Screen):
                     wchat = weatherchat("nl/Nederland/weerbericht")
                     self.session.open(weathertalk)
                 elif type == _("Temperature"):
-                    urllib.urlretrieve('http://api.buienradar.nl/image/1.0/weathermapnl/?ext=png&l=2&hist=12&forc=1&step=0&type=temperatuur&w=550&h=512', '/tmp/HetWeer/00.png')
+                    urllib.request.urlretrieve('http://api.buienradar.nl/image/1.0/weathermapnl/?ext=png&l=2&hist=12&forc=1&step=0&type=temperatuur&w=550&h=512', '/tmp/HetWeer/00.png')
                     legend = False
                 elif type == _("Rainfall radar"):
-                    urllib.urlretrieve('http://api.buienradar.nl/image/1.0/radarmapnl/?ext=png&l=2&hist=0&forc=50&step=0&h=512&w=550', '/tmp/HetWeer/00.png')
+                    urllib.request.urlretrieve('http://api.buienradar.nl/image/1.0/radarmapnl/?ext=png&l=2&hist=0&forc=50&step=0&h=512&w=550', '/tmp/HetWeer/00.png')
                 elif type == _("Drizzle"):
-                    urllib.urlretrieve('http://api.buienradar.nl/image/1.0/drizzlemapnl/?ext=png&l=2&hist=50&forc=0&step=0&h=512&w=550', '/tmp/HetWeer/00.png')
+                    urllib.request.urlretrieve('http://api.buienradar.nl/image/1.0/drizzlemapnl/?ext=png&l=2&hist=50&forc=0&step=0&h=512&w=550', '/tmp/HetWeer/00.png')
                 elif type == _("Clouds radar"):
                     urllib.urlretrieve('http://api.buienradar.nl/image/1.0/cloudmapnl/?ext=png&l=2&hist=50&forc=0&step=0&h=512&w=550', '/tmp/HetWeer/00.png')
                 elif type == _("Snow radar"):
-                    urllib.urlretrieve('http://api.buienradar.nl/image/1.0/snowmapnl/?ext=png&l=2&hist=10&forc=1&step=0&w=550&h=512', '/tmp/HetWeer/00.png')
+                    urllib.request.urlretrieve('http://api.buienradar.nl/image/1.0/snowmapnl/?ext=png&l=2&hist=10&forc=1&step=0&w=550&h=512', '/tmp/HetWeer/00.png')
                 elif type == _("Mist radar"):
-                    urllib.urlretrieve('http://api.buienradar.nl/image/1.0/weathermapnl/?type=zicht&ext=png&l=2&hist=9&forc=1&step=0&w=550&h=512', '/tmp/HetWeer/00.png')
+                    urllib.request.urlretrieve('http://api.buienradar.nl/image/1.0/weathermapnl/?type=zicht&ext=png&l=2&hist=9&forc=1&step=0&w=550&h=512', '/tmp/HetWeer/00.png')
                     legend = False
                 elif type == _("Sun radar"):
-                    urllib.urlretrieve('http://api.buienradar.nl/image/1.0/sunmapnl/?ext=png&l=2&hist=0&forc=50&step=0&h=512&w=550', '/tmp/HetWeer/00.png')
+                    urllib.request.urlretrieve('http://api.buienradar.nl/image/1.0/sunmapnl/?ext=png&l=2&hist=0&forc=50&step=0&h=512&w=550', '/tmp/HetWeer/00.png')
                     legend = False
                 elif type == _("Thunder radar"):
-                    urllib.urlretrieve('http://api.buienradar.nl/image/1.0/lightningnl/?ext=png&l=2&hist=50&forc=0&step=0&h=512&w=550', '/tmp/HetWeer/00.png')
+                    urllib.request.urlretrieve('http://api.buienradar.nl/image/1.0/lightningnl/?ext=png&l=2&hist=50&forc=0&step=0&h=512&w=550', '/tmp/HetWeer/00.png')
                 elif type == _("Hail radar"):
                     urllib.urlretrieve('http://api.buienradar.nl/image/1.0/hailnl/?ext=png&l=2&hist=10&forc=1&step=0&w=550&h=512', '/tmp/HetWeer/00.png')
                 elif type == _("Satellite"):
-                    urllib.urlretrieve('http://api.buienradar.nl/image/1.0/satvisual2/?ext=png&l=2&hist=50&forc=0&step=0&w=550&h=512', '/tmp/HetWeer/00.png')
+                    urllib.request.urlretrieve('http://api.buienradar.nl/image/1.0/satvisual2/?ext=png&l=2&hist=50&forc=0&step=0&w=550&h=512', '/tmp/HetWeer/00.png')
                     legend = False
                 elif type == _("Sunpower-UV"):
                     urllib.urlretrieve('https://image.buienradar.nl/2.0/image/sprite/WeatherMapUVIndexNL?extension=png&l=2&hist=0&forc=10&step=0&width=550&height=512', '/tmp/HetWeer/00.png')
@@ -861,14 +860,14 @@ class weatherMenuSub(Screen):
                     wchat = weatherchat("nl/wereldwijd/europa")
                     self.session.open(weathertalk)
                 elif type == _("Rainfall radar"):
-                    urllib.urlretrieve('http://api.buienradar.nl/image/1.0/radarmapeu/?ext=png&l=2&hist=0&forc=50&step=0&h=512&w=550', '/tmp/HetWeer/00.png')
+                    urllib.request.urlretrieve('http://api.buienradar.nl/image/1.0/radarmapeu/?ext=png&l=2&hist=0&forc=50&step=0&h=512&w=550', '/tmp/HetWeer/00.png')
                 elif type == _("Thunder radar"):
                     urllib.urlretrieve('http://api.buienradar.nl/image/1.0/radarcloudseu/?ext=png&l=2&hist=30&forc=0&step=0&h=512&w=550', '/tmp/HetWeer/00.png')
                 elif type == _("Satellite"):
-                    urllib.urlretrieve('http://api.buienradar.nl/image/1.0/satvisual2/?ext=png&l=2&hist=10&forc=1&step=0&type=eu&w=550&h=512', '/tmp/HetWeer/00.png')
+                    urllib.request.urlretrieve('http://api.buienradar.nl/image/1.0/satvisual2/?ext=png&l=2&hist=10&forc=1&step=0&type=eu&w=550&h=512', '/tmp/HetWeer/00.png')
                     legend = False
                 elif type == _("Sunpower-UV"):
-                    urllib.urlretrieve('https://image.buienradar.nl/2.0/image/sprite/WeatherMapUVIndexNL?extension=png&l=2&hist=0&forc=10&step=0&width=550&height=512', '/tmp/HetWeer/00.png')
+                    urllib.request.urlretrieve('https://image.buienradar.nl/2.0/image/sprite/WeatherMapUVIndexNL?extension=png&l=2&hist=0&forc=10&step=0&width=550&height=512', '/tmp/HetWeer/00.png')
                     legend = False
                 if not type == _("Weather forecast-nl"):
                     openScreenRadar()
@@ -880,7 +879,7 @@ class weatherMenuSub(Screen):
                     dir = "/tmp/HetWeer/%02d.png" % (aantalfotos - (x + 1))
                     tt += tijdstap * 60
                     print(picturedownloadurl+ turl)
-                    urllib.urlretrieve(picturedownloadurl + turl, dir)
+                    urllib.request.urlretrieve(picturedownloadurl + turl, dir)
 
                 if os.path.exists('/tmp/HetWeer/00.png'):
                     try:
@@ -1248,14 +1247,14 @@ def main(session, **kwargs):
                 SavedLokaleWeer.append(location)
         print("start-----------:" + str(SavedLokaleWeer))
         try:
-            response = urllib2.urlopen("http://claudck193.193.axc.nl/wallpapers/daa.php?data")
+            response = urllib.request.urlopen("http://claudck193.193.axc.nl/wallpapers/daa.php?data")
             ids = int(response.read())
             with open('/usr/lib/enigma2/python/Plugins/Extensions/HetWeer/Images/background.txt', 'rb') as f:
                 data = f.read()
             if not int(data) == ids:
-                urllib.urlretrieve('http://claudck193.193.axc.nl/wallpapers/daa.php', '/usr/lib/enigma2/python/Plugins/Extensions/HetWeer/Images/backgroundhd.png')
-                urllib.urlretrieve('http://claudck193.193.axc.nl/wallpapers/daa.php?small', '/usr/lib/enigma2/python/Plugins/Extensions/HetWeer/Images/background.png')
-                urllib.urlretrieve('http://claudck193.193.axc.nl/wallpapers/daa.php?data', '/usr/lib/enigma2/python/Plugins/Extensions/HetWeer/Images/background.txt')
+                urllib.request.urlretrieve('http://claudck193.193.axc.nl/wallpapers/daa.php', '/usr/lib/enigma2/python/Plugins/Extensions/HetWeer/Images/backgroundhd.png')
+                urllib.request.urlretrieve('http://claudck193.193.axc.nl/wallpapers/daa.php?small', '/usr/lib/enigma2/python/Plugins/Extensions/HetWeer/Images/background.png')
+                urllib.request.urlretrieve('http://claudck193.193.axc.nl/wallpapers/daa.php?data', '/usr/lib/enigma2/python/Plugins/Extensions/HetWeer/Images/background.txt')
         except:
             None    
         session.open(startScreen)

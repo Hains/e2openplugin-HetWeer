@@ -199,6 +199,7 @@ selectedWeerDay = 0
 def getLocWeer(iscity = None):
     inputCity = iscity
     global lockaaleStad
+    global weatherData
     mydata = []
     
     lockaaleStad = inputCity
@@ -210,7 +211,6 @@ def getLocWeer(iscity = None):
         print(citynumb)
         response = urllib.urlopen("http://api.buienradar.nl/data/forecast/1.1/all/"+ str(citynumb))
         antw = response.read()
-        global weatherData
         weatherData = json.loads(antw)
         return True
     except:
@@ -228,7 +228,6 @@ def getLocWeer(iscity = None):
         try:
             response = urllib.urlopen("http://api.buienradar.nl/data/forecast/1.1/all/"+match[0][0])
             antw = response.read()
-            global weatherData
             weatherData = json.loads(antw)
             return True
         except:
